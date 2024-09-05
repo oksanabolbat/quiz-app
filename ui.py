@@ -32,12 +32,17 @@ class QuizInterface:
     def get_next_question(self):
         self.q_canvas.config(bg="#fff")
         self.score_label.config(text=f"Score: {self.quiz_brain.score}")
-        q_text = self.quiz_brain.next_question()
+        if self.quiz_brain.still_has_questions():
+            q_text = self.quiz_brain.next_question()
+        else:
+            q_text = (f"You've answered all questions.\nYou score is "
+                      f"{self.quiz_brain.score}/{len(self.quiz_brain.question_list)}")
+            self.btn_true.config(state="disabled")
+            self.btn_false.config(state="disabled")
         self.q_canvas.itemconfig(self.question_text, text=q_text)
 
     def true_pressed(self):
         self.give_feedback(self.quiz_brain.check_answer("True"))
-        # self.get_next_question()
 
     def false_pressed(self):
         self.give_feedback(self.quiz_brain.check_answer("False"))
@@ -48,6 +53,5 @@ class QuizInterface:
             self.q_canvas.config(bg="green")
         else:
             self.q_canvas.config(bg="red")
+
         self.window.after(1000, self.get_next_question)
-    # def display_score(self, score):
-    #     self.score_label.te
